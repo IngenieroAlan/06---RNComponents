@@ -1,50 +1,67 @@
-import React, { useState } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
-import { HeaderTitle } from '../components/HeaderTitle'
-import { styles } from '../theme/appTheme'
+//React
+import React from 'react';
+import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, Text } from 'react-native';
+//Terceros
+//Mios
+import { HeaderTitle } from '../components/HeaderTitle';
+import { styles } from '../theme/appTheme';
+import { useForm } from '../hooks/useForm';
+import { CustomSwitch } from '../components/CustomSwitch';
 
 export const TextInputScreen = () => {
 
-    const [form,setForm] =useState({
-        name:'',
+    const { form, onChange } = useForm({
+        name: '',
         email: '',
         phone: '',
+        isSubscribed: false,
     });
-
-    const onChange = (value:string, field:string)=>{
-        setForm({
-            ...form,
-            [field]:value
-        });
-    }
-
+    const { isSubscribed } = form;
     return (
-        <View style={styles.globalMargin}>
-            <HeaderTitle title="Text Inputs" />
-            <TextInput
-                style={stylesScreen.inputStyle}
-                placeholder='Ingrese su nombre'
-                autoCorrect={false}
-                autoCapitalize='words'
-                onChangeText={(value) => onChange(value,'name')}
-            />
-            <TextInput
-                style={stylesScreen.inputStyle}
-                placeholder='Ingrese su email'
-                autoCorrect={false}
-                autoCapitalize='none'
-                onChangeText={(value) => onChange(value,'email')}
-                keyboardType='email-address'
-            />
-            <TextInput
-                style={stylesScreen.inputStyle}
-                placeholder='Ingrese su teléfono'
-                autoCorrect={false}
-                onChangeText={(value) => onChange(value,'phone')}
-                keyboardType='phone-pad'
-            />
-            <HeaderTitle title={JSON.stringify(form,null,3)} />
-        </View>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+                    <View style={styles.globalMargin}>
+                        <HeaderTitle title="Text Inputs" />
+                        <TextInput
+                            style={stylesScreen.inputStyle}
+                            placeholder='Ingrese su nombre'
+                            autoCorrect={false}
+                            autoCapitalize='words'
+                            onChangeText={(value) => onChange(value, 'name')}
+                            keyboardAppearance='light'
+                        />
+                        <TextInput
+                            style={stylesScreen.inputStyle}
+                            placeholder='Ingrese su email'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            onChangeText={(value) => onChange(value, 'email')}
+                            keyboardType='email-address'
+                            keyboardAppearance='default'
+                        />
+                        <View style={stylesScreen.switchRow}>
+                            <Text style={stylesScreen.switchText}>Subscrito</Text>
+                            <CustomSwitch isOn={isSubscribed} onChange={(value) => onChange(value, 'isSubscribed')} />
+                        </View>
+                        <HeaderTitle title={JSON.stringify(form, null, 3)} />
+                        <HeaderTitle title={JSON.stringify(form, null, 3)} />
+                        <TextInput
+                            style={stylesScreen.inputStyle}
+                            placeholder='Ingrese su teléfono'
+                            autoCorrect={false}
+                            onChangeText={(value) => onChange(value, 'phone')}
+                            keyboardType='phone-pad'
+                            keyboardAppearance='dark'
+                        />
+                        <View style={{ height: 100 }} />
+                    </View>
+                </TouchableWithoutFeedback>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -57,4 +74,14 @@ const stylesScreen = StyleSheet.create({
         paddingHorizontal: 10,
         marginVertical: 10,
     },
+    switchRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom:15,
+    },
+    switchText: {
+        fontSize: 25,
+        color: 'black',
+    }
 });
