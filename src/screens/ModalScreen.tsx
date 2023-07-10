@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Modal, Text, View } from 'react-native'
 import { HeaderTitle } from '../components/HeaderTitle'
 import { styles } from '../theme/appTheme';
+import { ThemeContext } from '../context/themeContext/ThemeContext';
 
 export const ModalScreen = () => {
+    const { theme: { colors } } = useContext(ThemeContext);
     const [isVisible, setIsVisible] = useState(false)
     return (
         <View style={styles.globalMargin}>
@@ -33,7 +35,7 @@ export const ModalScreen = () => {
                         width: 300,
                         height: 300,
                         borderRadius: 20,
-                        backgroundColor: 'white',
+                        backgroundColor: colors.card,
                         justifyContent: 'center',
                         alignItems: 'center',
                         bottom: 150,
@@ -45,8 +47,8 @@ export const ModalScreen = () => {
                         elevation: 15,
 
                     }}>
-                        <Text style={{fontSize:24,fontWeight:'bold',color:'black',marginBottom:10,}}>Modal</Text>
-                        <Text style={{marginVertical:20,}}>Cuerpo del modal</Text>
+                        <Text style={{fontSize:24,fontWeight:'bold',color:colors.text,marginBottom:10,}}>Modal</Text>
+                        <Text style={{marginVertical:20,color:colors.text}}>Cuerpo del modal</Text>
                         <Button
                             title="salir"
                             onPress={() => setIsVisible(false)}

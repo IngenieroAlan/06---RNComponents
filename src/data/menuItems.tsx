@@ -51,4 +51,9 @@ export const menuItem: MenuItem[] = [
     icon: 'phone-portrait-outline',
     component: 'SlidesScreen'
   },
+  {
+    name: 'Change theme',
+    icon: 'color-palette-outline',
+    component: 'ChangeThemeScreen'
+  },
 ]

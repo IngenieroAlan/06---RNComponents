@@ -1,5 +1,5 @@
 //React native 
-import React, { useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 import { Animated, Dimensions, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 //Terceros
@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useAnimation } from '../hooks/useAnimation';
+import { ThemeContext } from '../context/themeContext/ThemeContext';
 //Mios
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -39,13 +40,14 @@ const items: Slide[] = [
 export const SlidesScreen = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { opacity, fadeIn, fadeOut } = useAnimation();
+    const { theme: { colors } } = useContext(ThemeContext);
     const isVisible = useRef(false)
     const navigation = useNavigation();
     const renderItem = (item: Slide) => {
         return (
             <View style={{
                 flex: 1,
-                backgroundColor: 'white',
+                backgroundColor: colors.background,
                 borderRadius: 5,
                 padding: 40,
                 justifyContent: 'center',
@@ -59,8 +61,8 @@ export const SlidesScreen = () => {
                         resizeMode: 'center',
                     }}
                 />
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.desc}</Text>
+                <Text style={{...styles.title, color:colors.primary}}>{item.title}</Text>
+                <Text style={{fontSize:18, color:colors.text}}>{item.desc}</Text>
             </View>
         )
     }
@@ -68,7 +70,7 @@ export const SlidesScreen = () => {
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: 'white',
+                backgroundColor: colors.background,
                 paddingTop: 50,
             }}
         >
@@ -105,12 +107,12 @@ export const SlidesScreen = () => {
                         width: 10,
                         height: 10,
                         borderRadius: 5,
-                        backgroundColor: '#5856D6',
+                        backgroundColor: colors.primary,
                     }}
                 />
 
                 <Animated.View style={{ opacity }}>
-                    <TouchableOpacity style={styles.btnStyle}
+                    <TouchableOpacity style={{...styles.btnStyle,backgroundColor:colors.primary}}
                         activeOpacity={0.8}
                         onPress={() => {
                             if (isVisible.current) {
@@ -119,10 +121,10 @@ export const SlidesScreen = () => {
                         }
                         }
                     >
-                        <Text style={styles.btnText}>Entrar</Text>
+                        <Text style={{...styles.btnText, color:colors.text}}>Entrar</Text>
                         <Icon
                             name='chevron-forward-outline'
-                            color="white"
+                            color={colors.text}
                             size={30}
                         />
 
@@ -138,15 +140,9 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 35,
         fontWeight: "bold",
-        color: "#5856D6",
-    },
-    subtitle: {
-        fontSize: 18,
-        color: "black",
     },
     btnStyle: {
         flexDirection: 'row',
-        backgroundColor: '#5856D6',
         width: 135,
         height: 50,
         borderRadius: 15,
@@ -155,7 +151,6 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontSize: 25,
-        color: 'white',
         bottom: 2,
     }
 });
