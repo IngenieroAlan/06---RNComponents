@@ -26,7 +26,7 @@ export function Navigator() {
                 }
             }}
         >
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="Animation101Screen" component={Animation101Screen} />
             <Stack.Screen name="Animation102Screen" component={Animation102Screen} />
             <Stack.Screen name="SwitchScreen" component={SwitchScreen} />

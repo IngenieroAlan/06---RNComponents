@@ -16,12 +16,12 @@ export const useAnimation = () => {
         ).start();
         
     }
-    const fadeOut=()=>{
+    const fadeOut=(duration:number = 300)=>{
         Animated.timing(
             opacity,
             {
                 toValue:0,
-                duration:1000,
+                duration,
                 useNativeDriver:true
             }
         ).start();

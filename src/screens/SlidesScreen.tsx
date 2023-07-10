@@ -1,14 +1,16 @@
 //React native 
-import React from 'react'
-import { Dimensions, Image, ImageSourcePropType, Text, View } from 'react-native'
+import React, { useRef } from 'react'
+import { Animated, Dimensions, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 //Terceros
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { useState } from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { useAnimation } from '../hooks/useAnimation';
 //Mios
-import { HeaderTitle } from '../components/HeaderTitle'
-import { styles } from '../theme/appTheme';
 
-const {height:screenHeight, width:screenWidth} = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window');
 
 interface Slide {
     title: string;
@@ -35,46 +37,125 @@ const items: Slide[] = [
 ]
 
 export const SlidesScreen = () => {
-const renderItem = (item:Slide) =>{
-    return(
-        <View style={{
-            flex:1,
-            backgroundColor:'white',
-            borderRadius:5,
-            padding:40,
-            justifyContent:'center',
+    const [activeIndex, setActiveIndex] = useState(0);
+    const { opacity, fadeIn, fadeOut } = useAnimation();
+    const isVisible = useRef(false)
+    const navigation = useNavigation();
+    const renderItem = (item: Slide) => {
+        return (
+            <View style={{
+                flex: 1,
+                backgroundColor: 'white',
+                borderRadius: 5,
+                padding: 40,
+                justifyContent: 'center',
 
-        }}>
-            <HeaderTitle title={item.title}/>
-            <Image
-                source={item.img}
-                style={{
-                    width:350,
-                    height:400,
-                    resizeMode: 'center',
+            }}>
+                <Image
+                    source={item.img}
+                    style={{
+                        width: 350,
+                        height: 400,
+                        resizeMode: 'center',
+                    }}
+                />
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.subtitle}>{item.desc}</Text>
+            </View>
+        )
+    }
+    return (
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: 'white',
+                paddingTop: 50,
+            }}
+        >
+            <Carousel
+                /* ref={(c) => { this._carousel = c; }} */
+                data={items}
+                renderItem={({ item }) =>
+                    renderItem(item)
+                }
+                sliderWidth={screenWidth}
+                itemWidth={screenWidth}
+                layout='default'
+                onSnapToItem={(index) => {
+                    setActiveIndex(index);
+                    if (index === items.length - 1) {
+                        isVisible.current = true;
+                        fadeIn(500);
+                    } else {
+                        isVisible.current = false;
+                        fadeOut(500);
+                    }
                 }}
-
             />
-            <Text style={styles.subtitle}>{item.desc}</Text>
-        </View>
+            <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginHorizontal: 20,
+                alignItems: 'center',
+            }}>
+                <Pagination
+                    dotsLength={items.length}
+                    activeDotIndex={activeIndex}
+                    dotStyle={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        backgroundColor: '#5856D6',
+                    }}
+                />
+
+                <Animated.View style={{ opacity }}>
+                    <TouchableOpacity style={styles.btnStyle}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            if (isVisible.current) {
+                                navigation.navigate('HomeScreen' as never)
+                            }
+                        }
+                        }
+                    >
+                        <Text style={styles.btnText}>Entrar</Text>
+                        <Icon
+                            name='chevron-forward-outline'
+                            color="white"
+                            size={30}
+                        />
+
+                    </TouchableOpacity>
+                </Animated.View>
+
+
+            </View>
+        </SafeAreaView>
     )
 }
-  return (
-    <SafeAreaView
-        style={{
-            flex: 1,
-            backgroundColor:'red',
-            paddingTop:50,
-        }}
-    >
-        <Carousel
-              /* ref={(c) => { this._carousel = c; }} */
-              data={items}
-              renderItem={({item})=>renderItem(item)}
-              sliderWidth={screenWidth}
-              itemWidth={screenWidth}
-              layout='default'
-            />
-    </SafeAreaView>
-  )
-}
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 35,
+        fontWeight: "bold",
+        color: "#5856D6",
+    },
+    subtitle: {
+        fontSize: 18,
+        color: "black",
+    },
+    btnStyle: {
+        flexDirection: 'row',
+        backgroundColor: '#5856D6',
+        width: 135,
+        height: 50,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    btnText: {
+        fontSize: 25,
+        color: 'white',
+        bottom: 2,
+    }
+});
